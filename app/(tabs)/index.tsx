@@ -1,98 +1,269 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React from "react";
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const { width } = Dimensions.get("window");
 
-export default function HomeScreen() {
+// Dữ liệu giả lập cho danh mục và sản phẩm
+const CATEGORIES = ["Tất cả", "Áo khoác", "Giày dép", "Phụ kiện", "Đồ điện tử"];
+const PRODUCTS = [
+  {
+    id: "1",
+    name: "Áo Hoodie Modern",
+    price: "450.000đ",
+    image:
+      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1000&auto=format&fit=crop",
+  },
+  {
+    id: "2",
+    name: "Giày Sneaker White",
+    price: "1.200.000đ",
+    image:
+      "https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=1000&auto=format&fit=crop",
+  },
+  {
+    id: "3",
+    name: "Đồng hồ Minimalist",
+    price: "850.000đ",
+    image:
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop",
+  },
+  {
+    id: "4",
+    name: "Balo Du lịch",
+    price: "600.000đ",
+    image:
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1000&auto=format&fit=crop",
+  },
+];
+
+export default function ShopHomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
+    <View style={styles.container}>
+      {/* 1. Header & Thanh tìm kiếm */}
+      <View style={styles.header}>
+        <View style={styles.topRow}>
+          <View>
+            <Text style={styles.welcomeText}>Chào buổi sáng,</Text>
+            <Text style={styles.userName}>người dùng 36</Text>
+          </View>
+          <TouchableOpacity style={styles.cartBtn}>
+            <MaterialCommunityIcons
+              name="cart-outline"
+              size={26}
+              color="#000"
             />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+            <View style={styles.cartBadge} />
+          </TouchableOpacity>
+        </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <View style={styles.searchBar}>
+          <MaterialCommunityIcons name="magnify" size={22} color="#999" />
+          <TextInput
+            placeholder="Tìm kiếm sản phẩm..."
+            style={styles.searchInput}
+          />
+        </View>
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* 2. Banner Khuyến mãi */}
+        <View style={styles.bannerContainer}>
+          <View style={styles.bannerContent}>
+            <Text style={styles.bannerTitle}>Giảm giá 30%</Text>
+            <Text style={styles.bannerSub}>Cho bộ sưu tập mùa hè mới nhất</Text>
+            <TouchableOpacity style={styles.bannerBtn}>
+              <Text style={styles.bannerBtnText}>Mua ngay</Text>
+            </TouchableOpacity>
+          </View>
+          <Image
+            source={{
+              uri: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1000&auto=format&fit=crop",
+            }}
+            style={styles.bannerImg}
+          />
+        </View>
+
+        {/* 3. Danh mục (Categories) */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Danh mục</Text>
+          <TouchableOpacity>
+            <Text style={styles.seeAll}>Xem tất cả</Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoryList}>
+          {CATEGORIES.map((cat, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.categoryBtn,
+                index === 0 && styles.categoryBtnActive,
+              ]}>
+              <Text
+                style={[
+                  styles.categoryText,
+                  index === 0 && styles.categoryTextActive,
+                ]}>
+                {cat}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {/* 4. Danh sách sản phẩm (Grid) */}
+        <View style={styles.productGrid}>
+          {PRODUCTS.map((item) => (
+            <TouchableOpacity key={item.id} style={styles.productCard}>
+              <Image source={{ uri: item.image }} style={styles.productImage} />
+              <View style={styles.productInfo}>
+                <Text style={styles.productName} numberOfLines={1}>
+                  {item.name}
+                </Text>
+                <Text style={styles.productPrice}>{item.price}</Text>
+                <TouchableOpacity style={styles.addBtn}>
+                  <MaterialCommunityIcons name="plus" size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: { flex: 1, backgroundColor: "#F8F9FB" },
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 20,
+    backgroundColor: "#fff",
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  topRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  welcomeText: { fontSize: 14, color: "#888" },
+  userName: { fontSize: 20, fontWeight: "bold", color: "#000" },
+  cartBtn: { padding: 8, backgroundColor: "#F0F0F0", borderRadius: 12 },
+  cartBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 10,
+    height: 10,
+    backgroundColor: "#FF4757",
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: "#fff",
+  },
+
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F1F2F6",
+    paddingHorizontal: 15,
+    borderRadius: 15,
+    height: 50,
+  },
+  searchInput: { flex: 1, marginLeft: 10, fontSize: 16 },
+
+  bannerContainer: {
+    margin: 20,
+    height: 160,
+    borderRadius: 20,
+    overflow: "hidden",
+    flexDirection: "row",
+    backgroundColor: "#000",
+  },
+  bannerContent: { flex: 1, padding: 20, justifyContent: "center", zIndex: 1 },
+  bannerTitle: { color: "#fff", fontSize: 22, fontWeight: "bold" },
+  bannerSub: { color: "#ddd", fontSize: 12, marginVertical: 8 },
+  bannerBtn: {
+    backgroundColor: "#fff",
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    alignSelf: "flex-start",
+  },
+  bannerBtnText: { fontWeight: "bold", fontSize: 12 },
+  bannerImg: {
+    ...StyleSheet.absoluteFillObject,
+    width: "100%",
+    height: "100%",
+    opacity: 0.6,
+  },
+
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginBottom: 15,
+  },
+  sectionTitle: { fontSize: 18, fontWeight: "bold" },
+  seeAll: { color: "#3395ff" },
+
+  categoryList: { paddingLeft: 20, marginBottom: 20 },
+  categoryBtn: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: "#EEE",
+  },
+  categoryBtnActive: { backgroundColor: "#000", borderColor: "#000" },
+  categoryText: { color: "#888", fontWeight: "500" },
+  categoryTextActive: { color: "#fff" },
+
+  productGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingHorizontal: 15,
+    justifyContent: "space-between",
+  },
+  productCard: {
+    width: (width - 45) / 2,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    marginBottom: 15,
+    overflow: "hidden",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+  },
+  productImage: { width: "100%", height: 180 },
+  productInfo: { padding: 12 },
+  productName: { fontSize: 14, fontWeight: "bold", color: "#333" },
+  productPrice: {
+    fontSize: 14,
+    color: "#3395ff",
+    fontWeight: "700",
+    marginTop: 4,
+  },
+  addBtn: {
+    position: "absolute",
+    right: 10,
+    bottom: 10,
+    backgroundColor: "#000",
+    borderRadius: 8,
+    padding: 4,
   },
 });
