@@ -1,8 +1,12 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as SecureStore from "expo-secure-store";
 import React from "react";
 import {
+  Alert,
+  DevSettings,
   Dimensions,
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -47,6 +51,37 @@ const PRODUCTS = [
 ];
 
 export default function ShopHomeScreen() {
+  const clearOnboarding = async () => {
+    try {
+      await SecureStore.deleteItemAsync("has_launched");
+
+      const msg =
+        "Đã xóa lưu trữ. Vui lòng tải lại ứng dụng (refresh) để xem lại màn hình chào mừng (Onboarding).";
+      if (Platform.OS === "web") {
+        window.alert(msg);
+        window.location.reload(); // Tự động F5 trên web
+      } else {
+        Alert.alert("Thành công", msg, [
+          {
+            text: "Khởi động lại ngay",
+            onPress: () => {
+              if (__DEV__) {
+                DevSettings.reload();
+              } else {
+                Alert.alert("Hãy đóng hẳn app và mở lại.");
+              }
+            },
+          },
+          { text: "Để sau", style: "cancel" },
+        ]);
+      }
+    } catch (e) {
+      console.error("Lỗi khi xóa SecureStore", e);
+      if (Platform.OS === "web") window.alert("Lỗi khi xóa: " + e);
+      else Alert.alert("Lỗi", "Không thể xóa lưu trữ");
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* 1. Header & Thanh tìm kiếm */}
@@ -56,14 +91,26 @@ export default function ShopHomeScreen() {
             <Text style={styles.welcomeText}>Chào buổi sáng,</Text>
             <Text style={styles.userName}>người dùng 36</Text>
           </View>
-          <TouchableOpacity style={styles.cartBtn}>
-            <MaterialCommunityIcons
-              name="cart-outline"
-              size={26}
-              color="#000"
-            />
-            <View style={styles.cartBadge} />
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TouchableOpacity
+              onPress={clearOnboarding}
+              style={{
+                marginRight: 15,
+                padding: 8,
+                backgroundColor: "#F0F0F0",
+                borderRadius: 12,
+              }}>
+              <MaterialCommunityIcons name="refresh" size={26} color="#000" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cartBtn}>
+              <MaterialCommunityIcons
+                name="cart-outline"
+                size={26}
+                color="#000"
+              />
+              <View style={styles.cartBadge} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.searchBar}>

@@ -1,21 +1,22 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Tabs } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import OnboardingScreen from "./onboarding";
 
-const STORAGE_KEY = "@has_launched";
+const STORAGE_KEY = "has_launched";
 const PRIMARY_COLOR = "#00F0FF"; // Màu Neon Blue của Robot OS
 
 export default function RootLayout() {
+  // Onboarding logic: Kiểm tra lần đầu mở app và lưu trạng thái vào SecureStore
   const [isLoading, setIsLoading] = useState(true);
   const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const value = await AsyncStorage.getItem(STORAGE_KEY);
+        const value = await SecureStore.getItemAsync(STORAGE_KEY);
         setIsFirstLaunch(value === null);
       } catch (error) {
         setIsFirstLaunch(false);
@@ -28,7 +29,7 @@ export default function RootLayout() {
 
   const handleOnboardingDone = async () => {
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, "true");
+      await SecureStore.setItemAsync(STORAGE_KEY, "true");
       setIsFirstLaunch(false);
     } catch (error) {
       console.error("Error saving status:", error);
